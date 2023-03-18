@@ -1,0 +1,6 @@
+{
+  "watch": ["src", "webpack.config.js"],
+  "ext": "js,json,ts",
+  "exec": "webpack && serve"
+}
+  

@@ -1,11 +1,8 @@
-import { Observable } from 'rxjs';
+import { fromEvent } from "rxjs";
 
-const observable = new Observable(subscriber => {
-  subscriber.next('Hello');
-  subscriber.next('World');
-  subscriber.complete();
-});
+const button = document.getElementById("myButton");
+const myObservable$ = fromEvent(button, 'click');
 
-observable.subscribe(value => {
-  console.log(value)
-});
+const subscription = myObservable$.subscribe(
+  // console.log
+);
