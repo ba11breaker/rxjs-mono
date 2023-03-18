@@ -1,8 +1,3 @@
-import { fromEvent } from "rxjs";
+import AlphabetInvasion from './rxjs-alphabet-invasion';
 
-const button = document.getElementById("myButton");
-const myObservable$ = fromEvent(button, 'click');
-
-const subscription = myObservable$.subscribe(
-  // console.log
-);
+AlphabetInvasion();
