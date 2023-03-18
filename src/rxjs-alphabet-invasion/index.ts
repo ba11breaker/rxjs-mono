@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, fromEvent, interval, map, scan, startWith, switchMap } from "rxjs";
+import { BehaviorSubject, combineLatest, fromEvent, interval, map, scan, startWith, switchMap, takeWhile } from "rxjs";
 import { Letters, State } from "./interfaces";
 
 const randomLetter = () => String.fromCharCode(
@@ -51,17 +51,29 @@ const noop = () => { };
 const game$ = combineLatest(keys$, letter$)
   .pipe(
     scan<[string, Letters], State>((state, [key, letters]) => {
-
+      const latestIndex = letters.ltrs.length - 1;
+      const latestLetter = letters.ltrs[latestIndex];
+      if (latestLetter && latestLetter.letter === key) {
+        state.score = state.score + 1;
+        letters.ltrs.pop();
+      }
+      if (state.score > 0 && state.score % levelChangeThreshold === 0) {
+        letters.ltrs = [];
+        state.level = state.level + 1;
+        state.score = state.score + 1;
+        intervalSubject.next(letters.intrvl - speedAdjust);
+      }
       return {
-        score: 0,
-        letters: [],
-        level: 1
+        score: state.score,
+        letters: letters.ltrs,
+        level: state.level
       };
     }, {
       score: 0,
       letters: [],
       level: 1
-    })
+    }),
+    takeWhile(state => state.letters.length < endThreshold)
   )
 
 game$.subscribe({
